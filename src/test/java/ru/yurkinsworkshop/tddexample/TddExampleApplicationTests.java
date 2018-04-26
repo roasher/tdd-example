@@ -10,7 +10,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 public class TddExampleApplicationTests {
 
 	@Test
-	public void contextLoads() {
-	}
+	public void notifyNotAvailableIfProductQuantityIsZero() {}
+
+	@Test
+	public void notifyAvailableYellowProductIfPositiveQuantityAndVozovozApproved() {}
+
+	@Test
+	public void notifyOnceOnSeveralEqualProductMessages() {}
+
+	@Test
+	public void notifyFirstAvailableThenNotIfProductQuantityMovedFromPositiveToZero() {}
 
 }
