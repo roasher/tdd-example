@@ -6,4 +6,8 @@ public class Service {
     public void processUpdate(Update update) {
         // TODO impl
     }
+
+    public void disableProduct(long productId) {
+        // TODO impl
+    }
 }

@@ -1,17 +1,19 @@
 package ru.yurkinsworkshop.tddexample.web;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import ru.yurkinsworkshop.tddexample.dto.Update;
 import ru.yurkinsworkshop.tddexample.service.Service;
+import ru.yurkinsworkshop.tddexample.service.exception.DataCommunicationException;
 import ru.yurkinsworkshop.tddexample.service.exception.VozovozException;
 
 import static org.mockito.Matchers.any;
@@ -21,20 +23,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
+@WebMvcTest
+@AutoConfigureMockMvc
 public class ControllerTest {
 
     @InjectMocks
     private Controller controller;
-    @Mock
+    @MockBean
     private Service service;
 
+    @Autowired
     private MockMvc mvc;
-
-    @Before
-    public void init() {
-        mvc = MockMvcBuilders.standaloneSetup(controller).build();
-    }
 
     @Test
     public void returnBadRequestOnDisableWithInvalidProductId() throws Exception {
@@ -112,6 +112,33 @@ public class ControllerTest {
                         "  \"errors\": [\n" +
                         "    {\n" +
                         "      \"message\": \"Vozovoz communication exception\"\n" +
+                        "    }\n" +
+                        "  ]\n" +
+                        "}")
+        );
+
+    }
+
+    @Test
+    public void returnServerErrorOnDataCommunicationError() throws Exception {
+        doThrow(new DataCommunicationException()).when(service).processUpdate(any(Update.class));
+
+        performUpdate(
+                //language=JSON
+                "{\n" +
+                        "  \"productId\": 1,\n" +
+                        "  \"color\": \"red\",\n" +
+                        "  \"productQuantity\": 10\n" +
+                        "}"
+        ).andDo(
+                print()
+        ).andExpect(
+                status().isInternalServerError()
+        ).andExpect(
+                content().json("{\n" +
+                        "  \"errors\": [\n" +
+                        "    {\n" +
+                        "      \"message\": \"Can't communicate with Data system\"\n" +
                         "    }\n" +
                         "  ]\n" +
                         "}")
