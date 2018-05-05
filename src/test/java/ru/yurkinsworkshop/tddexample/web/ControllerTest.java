@@ -12,7 +12,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import ru.yurkinsworkshop.tddexample.dto.Update;
-import ru.yurkinsworkshop.tddexample.service.Service;
+import ru.yurkinsworkshop.tddexample.service.UpdateProcessorService;
 import ru.yurkinsworkshop.tddexample.service.exception.DataCommunicationException;
 import ru.yurkinsworkshop.tddexample.service.exception.VozovozException;
 
@@ -31,7 +31,7 @@ public class ControllerTest {
     @InjectMocks
     private Controller controller;
     @MockBean
-    private Service service;
+    private UpdateProcessorService updateProcessorService;
 
     @Autowired
     private MockMvc mvc;
@@ -94,7 +94,7 @@ public class ControllerTest {
 
     @Test
     public void returnServerErrorOnVozovozCommunicationError() throws Exception {
-        doThrow(new VozovozException()).when(service).processUpdate(any(Update.class));
+        doThrow(new VozovozException()).when(updateProcessorService).processUpdate(any(Update.class));
 
         performUpdate(
                 //language=JSON
@@ -121,7 +121,7 @@ public class ControllerTest {
 
     @Test
     public void returnServerErrorOnDataCommunicationError() throws Exception {
-        doThrow(new DataCommunicationException()).when(service).processUpdate(any(Update.class));
+        doThrow(new DataCommunicationException()).when(updateProcessorService).processUpdate(any(Update.class));
 
         performUpdate(
                 //language=JSON
@@ -164,7 +164,7 @@ public class ControllerTest {
 
     @Test
     public void returnServerErrorOnUnexpectedException() throws Exception {
-        doThrow(new RuntimeException()).when(service).processUpdate(any(Update.class));
+        doThrow(new RuntimeException()).when(updateProcessorService).processUpdate(any(Update.class));
 
         performUpdate(
                 //language=JSON

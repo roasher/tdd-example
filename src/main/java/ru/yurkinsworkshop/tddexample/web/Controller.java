@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yurkinsworkshop.tddexample.dto.Update;
-import ru.yurkinsworkshop.tddexample.service.Service;
+import ru.yurkinsworkshop.tddexample.service.UpdateProcessorService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -19,16 +19,16 @@ import javax.validation.constraints.Min;
 @Slf4j
 public class Controller {
 
-    private final Service service;
+    private final UpdateProcessorService updateProcessorService;
 
     @PostMapping("/product-quantity-update")
     public void updateQuantity(@RequestBody @Valid Update update) {
-        service.processUpdate(update);
+        updateProcessorService.processUpdate(update);
     }
 
     @PostMapping("/disableProduct")
     public void disableProduct(@RequestParam("productId") @Min(0) Long productId) {
-        service.disableProduct(Long.valueOf(productId));
+        updateProcessorService.disableProduct(Long.valueOf(productId));
     }
 
 }
