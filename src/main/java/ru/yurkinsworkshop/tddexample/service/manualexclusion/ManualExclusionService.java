@@ -1,5 +1,8 @@
 package ru.yurkinsworkshop.tddexample.service.manualexclusion;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class ManualExclusionService {
 
     public boolean isProductEnabled(Long productId) {
