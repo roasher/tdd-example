@@ -7,6 +7,7 @@ import ru.yurkinsworkshop.tddexample.client.VozovozClient;
 import ru.yurkinsworkshop.tddexample.dto.ProductAvailability;
 import ru.yurkinsworkshop.tddexample.dto.Update;
 import ru.yurkinsworkshop.tddexample.service.exception.VozovozException;
+import ru.yurkinsworkshop.tddexample.service.manualexclusion.ManualExclusionService;
 
 @Service
 @AllArgsConstructor
@@ -43,7 +44,4 @@ public class UpdateProcessorService {
         return new ProductAvailability(productId, false);
     }
 
-    public void disableProduct(long productId) {
-        // TODO impl
-    }
 }

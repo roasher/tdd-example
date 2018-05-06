@@ -10,6 +10,7 @@ import ru.yurkinsworkshop.tddexample.client.VozovozClient;
 import ru.yurkinsworkshop.tddexample.dto.ProductAvailability;
 import ru.yurkinsworkshop.tddexample.dto.Update;
 import ru.yurkinsworkshop.tddexample.service.exception.VozovozException;
+import ru.yurkinsworkshop.tddexample.service.manualexclusion.ManualExclusionService;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;

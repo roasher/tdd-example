@@ -15,6 +15,7 @@ import ru.yurkinsworkshop.tddexample.dto.Update;
 import ru.yurkinsworkshop.tddexample.service.UpdateProcessorService;
 import ru.yurkinsworkshop.tddexample.service.exception.DataCommunicationException;
 import ru.yurkinsworkshop.tddexample.service.exception.VozovozException;
+import ru.yurkinsworkshop.tddexample.service.manualexclusion.ManualExclusionService;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doThrow;
@@ -32,6 +33,8 @@ public class ControllerTest {
     private Controller controller;
     @MockBean
     private UpdateProcessorService updateProcessorService;
+    @MockBean
+    private ManualExclusionService manualExclusionService;
 
     @Autowired
     private MockMvc mvc;

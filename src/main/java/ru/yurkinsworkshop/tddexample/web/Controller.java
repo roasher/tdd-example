@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.yurkinsworkshop.tddexample.dto.Update;
 import ru.yurkinsworkshop.tddexample.service.UpdateProcessorService;
+import ru.yurkinsworkshop.tddexample.service.manualexclusion.ManualExclusionService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -20,6 +21,7 @@ import javax.validation.constraints.Min;
 public class Controller {
 
     private final UpdateProcessorService updateProcessorService;
+    private final ManualExclusionService manualExclusionService;
 
     @PostMapping("/product-quantity-update")
     public void updateQuantity(@RequestBody @Valid Update update) {
@@ -28,7 +30,7 @@ public class Controller {
 
     @PostMapping("/disableProduct")
     public void disableProduct(@RequestParam("productId") @Min(0) Long productId) {
-        updateProcessorService.disableProduct(Long.valueOf(productId));
+        manualExclusionService.disableProduct(Long.valueOf(productId));
     }
 
 }
