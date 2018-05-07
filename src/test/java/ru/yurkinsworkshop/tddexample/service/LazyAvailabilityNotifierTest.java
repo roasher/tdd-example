@@ -12,7 +12,8 @@ import org.springframework.web.client.RestClientException;
 import ru.yurkinsworkshop.tddexample.dto.ProductAvailability;
 import ru.yurkinsworkshop.tddexample.service.exception.DataCommunicationException;
 import ru.yurkinsworkshop.tddexample.service.notifier.AvailabilityNotifier;
-import ru.yurkinsworkshop.tddexample.service.notifier.AvailabilityRepository;
+import ru.yurkinsworkshop.tddexample.service.notifier.lazy.AvailabilityRepository;
+import ru.yurkinsworkshop.tddexample.service.notifier.LazyAvailabilityNotifier;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.is;

@@ -1,7 +1,7 @@
 package ru.yurkinsworkshop.tddexample.service;
 
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yurkinsworkshop.tddexample.client.VozovozClient;
 import ru.yurkinsworkshop.tddexample.dto.ProductAvailability;
@@ -11,13 +11,20 @@ import ru.yurkinsworkshop.tddexample.service.manualexclusion.ManualExclusionServ
 import ru.yurkinsworkshop.tddexample.service.notifier.AvailabilityNotifier;
 
 @Service
-@AllArgsConstructor
 @Slf4j
 public class UpdateProcessorService {
 
+
+    private final AvailabilityNotifier availabilityNotifier;
     private final VozovozClient vozovozClient;
     private final ManualExclusionService manualExclusionService;
-    private final AvailabilityNotifier availabilityNotifier;
+
+    public UpdateProcessorService(VozovozClient vozovozClient, ManualExclusionService manualExclusionService,
+                                  @Qualifier("lazyAvailabilityNotifier") AvailabilityNotifier availabilityNotifier) {
+        this.vozovozClient = vozovozClient;
+        this.manualExclusionService = manualExclusionService;
+        this.availabilityNotifier = availabilityNotifier;
+    }
 
     public void processUpdate(Update update) {
         if (update.getProductQuantity() <= 0) {

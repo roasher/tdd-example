@@ -1,7 +1,9 @@
-package ru.yurkinsworkshop.tddexample.service.notifier;
+package ru.yurkinsworkshop.tddexample.service.notifier.lazy;
 
 import lombok.Data;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "product_availability")
@@ -9,8 +11,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class AvailabilityPersistenceObject {
 
     @Id
-    private long id;
+    private ObjectId id;
 
+    @Indexed(unique = true)
     private Long productId;
     private boolean availability;
 
