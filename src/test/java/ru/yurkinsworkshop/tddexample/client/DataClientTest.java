@@ -30,7 +30,7 @@ public class DataClientTest {
 
     @Before
     public void init() {
-        when(dataConfig.getUrl()).thenReturn("/data-url");
+        when(dataConfig.getEndpoint()).thenReturn("/data-url");
 
         dataRestTemplate = new RestTemplate();
         server = MockRestServiceServer.createServer(dataRestTemplate);

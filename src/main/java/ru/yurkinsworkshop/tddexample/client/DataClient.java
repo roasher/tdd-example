@@ -16,7 +16,7 @@ public class DataClient implements AvailabilityNotifier {
 
     @Override
     public void notify(ProductAvailability productAvailability) {
-
+        dataRestTemplate.postForLocation(dataConfig.getEndpoint(), productAvailability);
     }
 
 }

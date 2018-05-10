@@ -13,6 +13,6 @@ import org.springframework.validation.annotation.Validated;
 public class DataConfig {
 
     @NotBlank
-    private String url;
+    private String endpoint;
 
 }
