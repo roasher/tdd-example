@@ -1,0 +1,5 @@
+vozovoz:
+  endpoint: http://localhost:8090/isDeliveryAvailable?productId={productId}
+
+data:
+  endpoint: http://localhost:8090/notify

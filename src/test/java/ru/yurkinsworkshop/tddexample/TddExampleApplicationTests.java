@@ -1,6 +1,7 @@
 package ru.yurkinsworkshop.tddexample;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +21,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-@AutoConfigureWireMock(port = 666)
+@AutoConfigureWireMock(port = 8090)
 public class TddExampleApplicationTests {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Before
+    public void init() {
+        WireMock.reset();
+    }
 
     @Test
     public void notifyNotAvailableIfProductQuantityIsZero() throws Exception {
@@ -32,7 +38,7 @@ public class TddExampleApplicationTests {
                 // language=JSON
                 "{\n" +
                         "  \"productId\": 111,\n" +
-                        "  \"isAvailable\": false\n" +
+                        "  \"available\": false\n" +
                         "}");
 
         performQuantityUpdateRequest(
@@ -48,15 +54,13 @@ public class TddExampleApplicationTests {
 
     @Test
     public void notifyAvailableYellowProductIfPositiveQuantityAndVozovozApproved() throws Exception {
-        stubFor(get(urlEqualTo("isDeliveryAvailable?productId=112"))
-                .withHeader("Content-Type", equalTo(MediaType.TEXT_PLAIN_VALUE))
-                .willReturn(aResponse().withStatus(HttpStatus.OK_200).withBody("true")));
+        stubVozovoz("112");
 
         stubNotification(
                 // language=JSON
                 "{\n" +
                         "  \"productId\": 112,\n" +
-                        "  \"isAvailable\": true\n" +
+                        "  \"available\": true\n" +
                         "}");
 
         performQuantityUpdateRequest(
@@ -68,23 +72,24 @@ public class TddExampleApplicationTests {
                         "}");
 
         verify(1, postRequestedFor(urlEqualTo("/notify")));
-        verify(1, postRequestedFor(urlEqualTo("isDeliveryAvailable?productId=112")));
     }
 
     @Test
     public void notifyOnceOnSeveralEqualProductMessages() throws Exception {
+        stubVozovoz("113");
+
         stubNotification(
                 // language=JSON
                 "{\n" +
-                        "  \"productId\": 112,\n" +
-                        "  \"isAvailable\": true\n" +
+                        "  \"productId\": 113,\n" +
+                        "  \"available\": true\n" +
                         "}");
 
         for (int i = 0; i < 5; i++) {
             performQuantityUpdateRequest(
                     // language=JSON
                     "{\n" +
-                            "  \"productId\": 112,\n" +
+                            "  \"productId\": 113,\n" +
                             "  \"color\" : \"Yellow\",  \n" +
                             "  \"productQuantity\": 10\n" +
                             "}");
@@ -95,17 +100,19 @@ public class TddExampleApplicationTests {
 
     @Test
     public void notifyFirstAvailableThenNotIfProductQuantityMovedFromPositiveToZero() throws Exception {
+        stubVozovoz("114");
+
         stubNotification(
                 // language=JSON
                 "{\n" +
-                        "  \"productId\": 112,\n" +
-                        "  \"isAvailable\": true\n" +
+                        "  \"productId\": 114,\n" +
+                        "  \"available\": true\n" +
                         "}");
 
         performQuantityUpdateRequest(
                 // language=JSON
                 "{\n" +
-                        "  \"productId\": 112,\n" +
+                        "  \"productId\": 114,\n" +
                         "  \"color\" : \"Yellow\",\n" +
                         "  \"productQuantity\": 10\n" +
                         "}");
@@ -113,14 +120,14 @@ public class TddExampleApplicationTests {
         stubNotification(
                 // language=JSON
                 "{\n" +
-                        "  \"productId\": 112,\n" +
-                        "  \"isAvailable\": false\n" +
+                        "  \"productId\": 114,\n" +
+                        "  \"available\": false\n" +
                         "}");
 
         performQuantityUpdateRequest(
                 // language=JSON
                 "{\n" +
-                        "  \"productId\": 112,\n" +
+                        "  \"productId\": 114,\n" +
                         "  \"color\" : \"Yellow\",\n" +
                         "  \"productQuantity\": 0\n" +
                         "}");
@@ -130,19 +137,26 @@ public class TddExampleApplicationTests {
 
     @Test
     public void noNotificationOnDisabledProduct() throws Exception {
-        disableProduct(10);
+        stubNotification(
+                // language=JSON
+                "{\n" +
+                        "  \"productId\": 115,\n" +
+                        "  \"available\": false\n" +
+                        "}");
+
+        disableProduct(115);
 
         for (int i = 0; i < 5; i++) {
             performQuantityUpdateRequest(
                     // language=JSON
                     "{\n" +
-                            "  \"productId\": 10,\n" +
+                            "  \"productId\": 115,\n" +
                             "  \"color\" : \"Yellow\",\n" +
                             "  \"productQuantity\": " + i + "\n" +
                             "}");
         }
 
-        verify(0, postRequestedFor(urlEqualTo("/notify")));
+        verify(1, postRequestedFor(urlEqualTo("/notify")));
     }
 
     private void disableProduct(int productId) throws Exception {
@@ -170,7 +184,12 @@ public class TddExampleApplicationTests {
     private void stubNotification(String content) {
         stubFor(WireMock.post(urlEqualTo("/notify"))
                 .withHeader("Content-Type", equalTo(MediaType.APPLICATION_JSON_UTF8_VALUE))
-                .withRequestBody(equalTo(content))
+                .withRequestBody(equalToJson(content))
                 .willReturn(aResponse().withStatus(HttpStatus.OK_200)));
+    }
+
+    private void stubVozovoz(final String productId) {
+        stubFor(get(urlEqualTo("/isDeliveryAvailable?productId=" + productId))
+                .willReturn(aResponse().withStatus(HttpStatus.OK_200).withBody("true")));
     }
 }
