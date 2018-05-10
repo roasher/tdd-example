@@ -31,7 +31,7 @@ public class LazyAvailabilityNotifierTest {
     private LazyAvailabilityNotifier lazyAvailabilityNotifier;
 
     @MockBean
-    @Qualifier("availabilityNotifierImpl")
+    @Qualifier("dataClient")
     private AvailabilityNotifier availabilityNotifier;
     @Autowired
     private AvailabilityRepository availabilityRepository;
