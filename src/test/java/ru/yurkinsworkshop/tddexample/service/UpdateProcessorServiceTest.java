@@ -6,10 +6,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.web.client.RestClientException;
-import ru.yurkinsworkshop.tddexample.client.VozovozClient;
+import ru.yurkinsworkshop.tddexample.client.DostavchenkoClient;
 import ru.yurkinsworkshop.tddexample.dto.ProductAvailability;
 import ru.yurkinsworkshop.tddexample.dto.Update;
-import ru.yurkinsworkshop.tddexample.service.exception.VozovozException;
+import ru.yurkinsworkshop.tddexample.service.exception.DostavchenkoException;
 import ru.yurkinsworkshop.tddexample.service.manualexclusion.ManualExclusionService;
 import ru.yurkinsworkshop.tddexample.service.notifier.AvailabilityNotifier;
 
@@ -25,7 +25,7 @@ public class UpdateProcessorServiceTest {
     @Mock
     private ManualExclusionService manualExclusionService;
     @Mock
-    private VozovozClient vozovozClient;
+    private DostavchenkoClient dostavchenkoClient;
     @Mock
     private AvailabilityNotifier availabilityNotifier;
 
@@ -33,7 +33,7 @@ public class UpdateProcessorServiceTest {
     public void notifyAvailableIfYellowProductIsEnabledAndReadyForTransportation() {
         final Update testProduct = new Update(1L, 10L, "Yellow");
 
-        when(vozovozClient.isAvailableForTransportation(testProduct.getProductId())).thenReturn(true);
+        when(dostavchenkoClient.isAvailableForTransportation(testProduct.getProductId())).thenReturn(true);
         when(manualExclusionService.isProductEnabled(testProduct.getProductId())).thenReturn(true);
 
         updateProcessorService.processUpdate(testProduct);
@@ -49,7 +49,7 @@ public class UpdateProcessorServiceTest {
 
         verify(availabilityNotifier, only()).notify(eq(new ProductAvailability(testProduct.getProductId(), false)));
         verifyNoMoreInteractions(manualExclusionService);
-        verifyNoMoreInteractions(vozovozClient);
+        verifyNoMoreInteractions(dostavchenkoClient);
     }
 
     @Test
@@ -60,7 +60,7 @@ public class UpdateProcessorServiceTest {
 
         verify(availabilityNotifier, only()).notify(eq(new ProductAvailability(testProduct.getProductId(), false)));
         verifyNoMoreInteractions(manualExclusionService);
-        verifyNoMoreInteractions(vozovozClient);
+        verifyNoMoreInteractions(dostavchenkoClient);
     }
 
     @Test
@@ -72,14 +72,14 @@ public class UpdateProcessorServiceTest {
         updateProcessorService.processUpdate(testProduct);
 
         verify(availabilityNotifier, only()).notify(eq(new ProductAvailability(testProduct.getProductId(), false)));
-        verifyNoMoreInteractions(vozovozClient);
+        verifyNoMoreInteractions(dostavchenkoClient);
     }
 
     @Test
     public void notifyNotAvailableIfProductIsNotReadyForTransportation() {
         final Update testProduct = new Update(1L, 10L, "Yellow");
 
-        when(vozovozClient.isAvailableForTransportation(testProduct.getProductId())).thenReturn(false);
+        when(dostavchenkoClient.isAvailableForTransportation(testProduct.getProductId())).thenReturn(false);
         when(manualExclusionService.isProductEnabled(testProduct.getProductId())).thenReturn(true);
 
         updateProcessorService.processUpdate(testProduct);
@@ -87,11 +87,11 @@ public class UpdateProcessorServiceTest {
         verify(availabilityNotifier, only()).notify(eq(new ProductAvailability(testProduct.getProductId(), false)));
     }
 
-    @Test(expected = VozovozException.class)
-    public void throwCustomExceptionIfVozovozCommunicationFailed() {
+    @Test(expected = DostavchenkoException.class)
+    public void throwCustomExceptionIfDostavchenkoCommunicationFailed() {
         final Update testProduct = new Update(1L, 10L, "Yellow");
 
-        when(vozovozClient.isAvailableForTransportation(testProduct.getProductId()))
+        when(dostavchenkoClient.isAvailableForTransportation(testProduct.getProductId()))
                 .thenThrow(new RestClientException("Something's wrong"));
         when(manualExclusionService.isProductEnabled(testProduct.getProductId())).thenReturn(true);
 

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import ru.yurkinsworkshop.tddexample.service.exception.DataCommunicationException;
-import ru.yurkinsworkshop.tddexample.service.exception.VozovozException;
+import ru.yurkinsworkshop.tddexample.service.exception.DostavchenkoException;
 
 import javax.validation.ConstraintViolationException;
 import java.util.Collections;
@@ -43,20 +43,20 @@ public class ApplicationExceptionHandler {
         return new ErrorResponse(fieldErrors);
     }
 
-    @ExceptionHandler(VozovozException.class)
+    @ExceptionHandler(DostavchenkoException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse onVozovozCommunicationException(VozovozException exception) {
-        log.error("Vozovoz communication exception", exception);
+    public ErrorResponse onDostavchenkoCommunicationException(DostavchenkoException exception) {
+        log.error("DostavchenKO communication exception", exception);
         return new ErrorResponse(Collections.singletonList(
-                new ErrorResponse.Message("Vozovoz communication exception")));
+                new ErrorResponse.Message("DostavchenKO communication exception")));
     }
 
     @ExceptionHandler(DataCommunicationException.class)
     @ResponseBody
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse onDataCommunicationException(DataCommunicationException exception) {
-        log.error("Vozovoz communication exception", exception);
+        log.error("DostavchenKO communication exception", exception);
         return new ErrorResponse(Collections.singletonList(
                 new ErrorResponse.Message("Can't communicate with Data system")));
     }

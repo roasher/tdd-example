@@ -1,4 +1,4 @@
-package ru.yurkinsworkshop.tddexample.configuration.vozovoz;
+package ru.yurkinsworkshop.tddexample.configuration.dostavchenko;
 
 import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;
@@ -7,10 +7,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.annotation.Validated;
 
 @Configuration
-@ConfigurationProperties(prefix = "vozovoz")
+@ConfigurationProperties(prefix = "dostavchenko")
 @Data
 @Validated
-public class VozovozConfig {
+public class DostavchenkoConfig {
 
     @NotBlank
     private String endpoint;

@@ -53,8 +53,8 @@ public class TddExampleApplicationTests {
     }
 
     @Test
-    public void notifyAvailableYellowProductIfPositiveQuantityAndVozovozApproved() throws Exception {
-        stubVozovoz("112");
+    public void notifyAvailableYellowProductIfPositiveQuantityAndDostavchenkoApproved() throws Exception {
+        stubDostavchenko("112");
 
         stubNotification(
                 // language=JSON
@@ -76,7 +76,7 @@ public class TddExampleApplicationTests {
 
     @Test
     public void notifyOnceOnSeveralEqualProductMessages() throws Exception {
-        stubVozovoz("113");
+        stubDostavchenko("113");
 
         stubNotification(
                 // language=JSON
@@ -100,7 +100,7 @@ public class TddExampleApplicationTests {
 
     @Test
     public void notifyFirstAvailableThenNotIfProductQuantityMovedFromPositiveToZero() throws Exception {
-        stubVozovoz("114");
+        stubDostavchenko("114");
 
         stubNotification(
                 // language=JSON
@@ -188,7 +188,7 @@ public class TddExampleApplicationTests {
                 .willReturn(aResponse().withStatus(HttpStatus.OK_200)));
     }
 
-    private void stubVozovoz(final String productId) {
+    private void stubDostavchenko(final String productId) {
         stubFor(get(urlEqualTo("/isDeliveryAvailable?productId=" + productId))
                 .willReturn(aResponse().withStatus(HttpStatus.OK_200).withBody("true")));
     }

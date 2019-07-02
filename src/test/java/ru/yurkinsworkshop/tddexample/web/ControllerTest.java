@@ -14,7 +14,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import ru.yurkinsworkshop.tddexample.dto.Update;
 import ru.yurkinsworkshop.tddexample.service.UpdateProcessorService;
 import ru.yurkinsworkshop.tddexample.service.exception.DataCommunicationException;
-import ru.yurkinsworkshop.tddexample.service.exception.VozovozException;
+import ru.yurkinsworkshop.tddexample.service.exception.DostavchenkoException;
 import ru.yurkinsworkshop.tddexample.service.manualexclusion.ManualExclusionService;
 
 import static org.mockito.Matchers.any;
@@ -96,8 +96,8 @@ public class ControllerTest {
     }
 
     @Test
-    public void returnServerErrorOnVozovozCommunicationError() throws Exception {
-        doThrow(new VozovozException()).when(updateProcessorService).processUpdate(any(Update.class));
+    public void returnServerErrorOnDostavchenkoCommunicationError() throws Exception {
+        doThrow(new DostavchenkoException()).when(updateProcessorService).processUpdate(any(Update.class));
 
         performUpdate(
                 //language=JSON
@@ -114,7 +114,7 @@ public class ControllerTest {
                 content().json("{\n" +
                         "  \"errors\": [\n" +
                         "    {\n" +
-                        "      \"message\": \"Vozovoz communication exception\"\n" +
+                        "      \"message\": \"DostavchenKO communication exception\"\n" +
                         "    }\n" +
                         "  ]\n" +
                         "}")

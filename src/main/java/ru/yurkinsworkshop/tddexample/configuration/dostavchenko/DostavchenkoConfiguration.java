@@ -1,14 +1,14 @@
-package ru.yurkinsworkshop.tddexample.configuration.vozovoz;
+package ru.yurkinsworkshop.tddexample.configuration.dostavchenko;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
 
 @Configuration
-public class VozovozConfiguration {
+public class DostavchenkoConfiguration {
 
     @Bean
-    public RestTemplate vozovozRestTemplate() {
+    public RestTemplate dostavchenkoRestTemplate() {
         return new RestTemplate();
     }
 

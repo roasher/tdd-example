@@ -3,10 +3,10 @@ package ru.yurkinsworkshop.tddexample.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import ru.yurkinsworkshop.tddexample.client.VozovozClient;
+import ru.yurkinsworkshop.tddexample.client.DostavchenkoClient;
 import ru.yurkinsworkshop.tddexample.dto.ProductAvailability;
 import ru.yurkinsworkshop.tddexample.dto.Update;
-import ru.yurkinsworkshop.tddexample.service.exception.VozovozException;
+import ru.yurkinsworkshop.tddexample.service.exception.DostavchenkoException;
 import ru.yurkinsworkshop.tddexample.service.manualexclusion.ManualExclusionService;
 import ru.yurkinsworkshop.tddexample.service.notifier.AvailabilityNotifier;
 
@@ -16,12 +16,12 @@ public class UpdateProcessorService {
 
 
     private final AvailabilityNotifier availabilityNotifier;
-    private final VozovozClient vozovozClient;
+    private final DostavchenkoClient dostavchenkoClient;
     private final ManualExclusionService manualExclusionService;
 
-    public UpdateProcessorService(VozovozClient vozovozClient, ManualExclusionService manualExclusionService,
+    public UpdateProcessorService(DostavchenkoClient dostavchenkoClient, ManualExclusionService manualExclusionService,
                                   @Qualifier("lazyAvailabilityNotifier") AvailabilityNotifier availabilityNotifier) {
-        this.vozovozClient = vozovozClient;
+        this.dostavchenkoClient = dostavchenkoClient;
         this.manualExclusionService = manualExclusionService;
         this.availabilityNotifier = availabilityNotifier;
     }
@@ -40,11 +40,11 @@ public class UpdateProcessorService {
             return;
         }
         try {
-            final boolean availableForTransportation = vozovozClient.isAvailableForTransportation(update.getProductId());
+            final boolean availableForTransportation = dostavchenkoClient.isAvailableForTransportation(update.getProductId());
             availabilityNotifier.notify(new ProductAvailability(update.getProductId(), availableForTransportation));
         } catch (Exception exception) {
-            log.warn("Problems communicating with Vozovoz", exception);
-            throw new VozovozException();
+            log.warn("Problems communicating with DostavchenKO", exception);
+            throw new DostavchenkoException();
         }
     }
 

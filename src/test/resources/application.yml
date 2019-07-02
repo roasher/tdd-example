@@ -1,4 +1,4 @@
-vozovoz:
+dostavchenko:
   endpoint: http://localhost:8090/isDeliveryAvailable?productId={productId}
 
 data:
